@@ -1,0 +1,249 @@
+@startuml
+
+title __SAMPLE2's Class Diagram__\n
+
+  package com.example.sample2 {
+    class Cube {
+        {static} + mProjMatrix : float[]
+        {static} + mVMatrix : float[]
+        {static} + mMVPMatrix : float[]
+        {static} + mMMatrix : float[]
+        ~ vCount : int
+        ~ iCount : int
+        ~ mVertexBuffer : FloatBuffer
+        ~ mColorBuffer : FloatBuffer
+        ~ mIndexBuffer : ByteBuffer
+        ~ mVertexShader : String
+        ~ mFragmentShader : String
+        ~ mProgram : int
+        ~ maPositionHandle : int
+        ~ maColorHandle : int
+        ~ muMVPMatrixHandle : int
+        + Cube()
+        + Cube()
+        + initVertexData()
+        + initShader()
+        {static} + getFinalMatrix()
+        + drawself()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class Cubee {
+        {static} + mProjMatrix : float[]
+        {static} + mVMatrix : float[]
+        {static} + mMVPMatrix : float[]
+        {static} + mMMatrix : float[]
+        ~ vCount : int
+        ~ iCount : int
+        ~ mVertexBuffer : FloatBuffer
+        ~ mColorBuffer : FloatBuffer
+        ~ mIndexBuffer : ByteBuffer
+        ~ mVertexShader : String
+        ~ mFragmentShader : String
+        ~ mProgram : int
+        ~ maPositionHandle : int
+        ~ maColorHandle : int
+        ~ muMVPMatrixHandle : int
+        + Cubee()
+        + initShader()
+        {static} + getFinalMatrix()
+        + initVertexData()
+        + drawself()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class Heaxgon {
+        {static} + mProjMatrix : float[]
+        {static} + mVMatrix : float[]
+        {static} + mMVPMatrix : float[]
+        {static} + mMMatrix : float[]
+        ~ vCount : int
+        ~ iCount : int
+        ~ mVertexBuffer : FloatBuffer
+        ~ mColorBuffer : FloatBuffer
+        ~ mIndexBuffer : ByteBuffer
+        ~ mVertexShader : String
+        ~ mFragmentShader : String
+        ~ mProgram : int
+        ~ maPositionHandle : int
+        ~ maColorHandle : int
+        ~ muMVPMatrixHandle : int
+        ~ UNIT_SIZE : float
+        {static} ~ yAngle : float
+        {static} ~ xAngle : float
+        + Heaxgon()
+        + initShader()
+        + initVertexData()
+        {static} + getFinalMatrix()
+        + drawSelf()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class MainActivity {
+        # onCreate()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class ShaderUtil {
+        {static} + loadShader()
+        {static} + creatProgram()
+        {static} + checkGLError()
+        {static} + loadFromAssetsFile()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class data {
+        {static} ~ screenWidth : int
+        {static} ~ screenHeight : int
+        {static} ~ H : int
+        {static} ~ current_rec : myrec
+        {static} ~ initW : int
+        {static} ~ queue : ArrayList<myrec>
+        {static} ~ initpoint : point3d
+        {static} ~ current : int
+        {static} ~ current_h : int
+        {static} ~ max_h : int
+        {static} ~ is_stop : int
+        {static} ~ is_x : int
+        {static} ~ dynamic_rec1 : myrec2
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class dynamic_Cube {
+        ~ cangle : float
+        ~ cshift : float
+        ~ dshift : float
+        ~ rotatm : float[]
+        + dynamic_Cube()
+        + mat()
+        + check()
+        + initVertexData()
+        {static} + getFinalMatrix()
+        + drawself()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class mySurfaceView {
+        - TOUCH_SCALE_FACTOR : float
+        - mPreviousY : float
+        - mPreviousX : float
+        {static} ~ yAngle : float
+        {static} ~ xAngle : float
+        {static} ~ dxx : float
+        + mySurfaceView()
+        + mySurfaceView()
+        + onTouchEvent()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class SceneRenderer {
+        ~ ha : Heaxgon[]
+        + onDrawFrame()
+        + onSurfaceCreated()
+        + onSurfaceChanged()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class translateThread {
+        + flag : boolean
+        + f : float
+        + run()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class myrec {
+        ~ h : int
+        + myrec()
+        + clone()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class myrec2 {
+        + myrec2()
+        + tom()
+        + toM()
+        + myrec2()
+        + clone()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class point {
+        ~ x : int
+        ~ y : int
+        + point()
+    }
+  }
+  
+
+  package com.example.sample2 {
+    class point3d {
+        ~ x : float
+        ~ y : float
+        ~ z : float
+        + tomat()
+        + point3d()
+        + clone()
+    }
+  }
+  
+
+  MainActivity -up-|> AppCompatActivity
+  HostCallbacks -up-|> FragmentHostCallback
+  dynamic_Cube -up-|> Cube
+  dynamic_Cube o-- myrec2 : tmp
+  mySurfaceView -up-|> GLSurfaceView
+  mySurfaceView o-- SceneRenderer : mRenderer
+  mySurfaceView o-- translateThread : T1
+  mySurfaceView +-down- SceneRenderer
+  mySurfaceView +-down- translateThread
+  SceneRenderer -up-|> Renderer
+  BaseSavedState -up-|> AbsSavedState
+  myrec -up-|> Cloneable
+  myrec o-- point3d : p1
+  myrec o-- point3d : p2
+  myrec o-- point3d : p3
+  myrec o-- point3d : p4
+  myrec2 -up-|> Cloneable
+  myrec2 o-- point3d : p1
+  myrec2 o-- point3d : p2
+  myrec2 o-- point3d : p3
+  myrec2 o-- point3d : p4
+  myrec2 o-- point3d : p5
+  myrec2 o-- point3d : p6
+  myrec2 o-- point3d : p7
+  myrec2 o-- point3d : p8
+  point3d -up-|> Cloneable
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml
