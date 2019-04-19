@@ -3,4 +3,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="scroll_bar_line_red">#FF6A6A</color>
+    <color name="scroll_bar_text_red_label">#8B1A1A</color>
+    <color name="scroll_bar_line_blue">#BFFFFF</color>
+    <color name="scroll_bar_text_blue_label">#00688D</color>
 </resources>

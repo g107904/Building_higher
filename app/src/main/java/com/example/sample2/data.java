@@ -1,5 +1,7 @@
 package com.example.sample2;
 
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.opengl.Matrix;
 import android.util.Log;
 
@@ -124,7 +126,7 @@ class myrec2 implements Cloneable{
         }catch (CloneNotSupportedException e){
             e.printStackTrace();
         }
-        pp.p = (point3d[])p.clone();
+        pp.p = p.clone();
         //Log.e("address1","rec1 "+this.p[5]+" tmp "+pp.p[5]);
         pp.p[1] = new point3d(p[1].x,p[1].y,p[1].z);
         pp.p[2] = new point3d(p[2].x,p[2].y,p[2].z);
@@ -156,6 +158,16 @@ public class data{
     static float cangle = 0,cshift = 0,dshift = 0;
     static int flag;
     static int score = 0;
+    static int[] scorelist = new int[110];
+    static int scorecount = 0;
+    static String filename = "score.data";
+    static int translate_v = 25;
+    static BackgroundMusic backmusic;
+    static int soundnumber = 0;
+    static float eps = 1;
+    static SoundPool mSound = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+    static int counts = 10;
+    static boolean isfirst = true;
 }
 
 

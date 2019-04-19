@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    >
+
+    <TextView
+        android:id="@+id/textp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Setting"
+        android:textAlignment="center"
+        android:layout_marginBottom="30dp"
+        android:textColor="@android:color/background_light"
+        android:textSize="@android:dimen/app_icon_size" />
+
+    <TextView
+        android:id="@+id/text0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
+        android:text="stop the backgroundmusic?"
+        android:textColor="@android:color/background_light" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:switchMinWidth="60dp"
+        android:layout_below="@+id/textp"
+        android:layout_toRightOf = "@+id/text0"
+        android:textOff="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+        android:textOn="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+        android:thumb="@drawable/thumb"
+        android:thumbTextPadding="0dp"
+        android:track="@drawable/switch_track" />
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:id = "@+id/v"
+        android:text = "select the velocity\n(10 means the fast)"
+        android:textColor="@android:color/background_light"
+        android:textSize="20dp"
+        android:textAlignment="gravity"
+        android:layout_below="@+id/text0"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="70dp"/>
+    <com.example.sample2.PickerView
+        android:id="@+id/mview"
+        android:layout_width="80dp"
+        android:layout_height="160dp"
+        android:layout_below="@+id/text0"
+        android:layout_toRightOf = "@+id/v"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/clearbutton"
+        android:text="clear score file?"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_below="@+id/v"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/rbutton"
+        android:text="return"
+        android:layout_marginLeft="30dp"
+        android:layout_below="@+id/clearbutton"/>
+</RelativeLayout>

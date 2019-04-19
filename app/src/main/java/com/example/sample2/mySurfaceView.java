@@ -3,6 +3,7 @@ package com.example.sample2;
 import android.content.Context;
 //import android.opengl.EGLConfig;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -10,6 +11,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -29,6 +33,11 @@ public class mySurfaceView extends GLSurfaceView {
         Log.e("run","    surf");
         this.setEGLContextClientVersion(2);
         mRenderer = new SceneRenderer();
+
+        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        setZOrderOnTop(true);
+
         setRenderer(mRenderer);
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
@@ -47,6 +56,7 @@ public class mySurfaceView extends GLSurfaceView {
     public boolean onTouchEvent(MotionEvent e){
         float y = e.getY();
         float x = e.getX();
+
         switch(e.getAction()){
             case MotionEvent.ACTION_MOVE:
                 float dy = y - mPreviousY;
@@ -69,10 +79,20 @@ public class mySurfaceView extends GLSurfaceView {
                 rec2.p4.y += rec2.h;*/
                 if(data.is_x == 1) {
                     float x1 = rec2.p3.x, x2 = rec2.p2.x, x1c = x1 + dxx * data.screenWidth / 2, x2c = x2 + dxx * data.screenWidth / 2;
+                    if(Math.abs(x1c-x1)<data.eps){
+                        data.soundnumber++;
+                        if(data.soundnumber == 8)
+                            data.soundnumber = 1;
+                        x1c = x1;
+                        x2c = x2;
+                    }
+                    else
+                        data.soundnumber = 0;
                     if (x2c <= x1 || x1c >= x2) {
                         data.is_stop = 1;
                         data.current_h = 0;
                         data.current = 0;
+                        data.soundnumber = 0;
                         drawActivity.b.setVisibility(View.VISIBLE );
                         //todo
                         return true;
@@ -110,10 +130,20 @@ public class mySurfaceView extends GLSurfaceView {
                 }
                 else{
                     float z1 = rec2.p2.z,z2 = rec2.p1.z,z1c = z1+dxx,z2c = z2+dxx;
+                    if(Math.abs(z1c-z1)<data.eps/data.screenWidth){
+                        data.soundnumber++;
+                        if(data.soundnumber == 8)
+                            data.soundnumber = 1;
+                        z1c = z1;
+                        z2c = z2;
+                    }
+                    else
+                        data.soundnumber = 0;
                     if (z2c <= z1 || z1c >= z2) {
                         data.is_stop = 1;
                         data.current_h = 0;
                         data.current = 0;
+                        data.soundnumber = 0;
                         drawActivity.b.setVisibility(View.VISIBLE );
                         //todo
                         return true;
@@ -156,12 +186,19 @@ public class mySurfaceView extends GLSurfaceView {
                 if(data.score < 0)
                     data.score = 0;
                 drawActivity.text.setText(String.valueOf(data.score));
-                dynamic_t = true;
+                //dynamic_t = true;
+                if(data.soundnumber != 0){
+                    startmusic(data.soundnumber);
+                    data.counts = 5;
+                    light_circle lc = new light_circle(mySurfaceView.this,data.queue.size()-1);
+                    lc.drawself();
+                }
+                else
+                    dynamic_t = true;
                 dynamicThread T2 = new dynamicThread();
                 T2.start();
                 Log.e("touch","x "+data.dynamic_rec1.p[5].x);
                 //T1.start();
-
         }
         mPreviousX = x;
         mPreviousY = y;
@@ -178,6 +215,11 @@ public class mySurfaceView extends GLSurfaceView {
                 
 
             }
+            if(data.soundnumber != 0 && data.counts != 0){
+                light_circle lc = new light_circle(mySurfaceView.this,data.queue.size()-1);
+                lc.drawself();
+                data.counts--;
+            }
             for(int i = data.current;i < data.queue.size();i++){
                 Cube t = new Cube(mySurfaceView.this,i);
                 t.drawself();
@@ -187,6 +229,15 @@ public class mySurfaceView extends GLSurfaceView {
                 dynamic_Cube dyc = new dynamic_Cube(mySurfaceView.this);
                 dyc.drawself();
             }
+            /*else if(!T1.flag){
+                data.is_x = -data.is_x;
+                dxx = -1f;
+
+                T1 = new translateThread();
+
+                T1.start();
+                T1.flag = true;
+            }*/
             /*for(Heaxgon h : ha){
                 h.drawSelf();
             }*/
@@ -194,7 +245,8 @@ public class mySurfaceView extends GLSurfaceView {
 
         public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig) {
             Log.e("run",":Create");
-            GLES20.glClearColor(0.5f,0.5f,0.5f,1.0f);
+            GLES20.glClearColor(0,0,0,0);
+            //GLES20.glClearColor(0.5f,0.5f,0.5f,1.0f);
             for(int i = 0;i < 6;i++) {
                 ha[i] = new Heaxgon(mySurfaceView.this, -(float) i / 2);
             }
@@ -227,7 +279,7 @@ public class mySurfaceView extends GLSurfaceView {
                     //xAngle += 50 * TOUCH_SCALE_FACTOR;
                 }
                 try{
-                    Thread.sleep(25);
+                    Thread.sleep(data.translate_v);
                 }catch (InterruptedException e){
                     e.printStackTrace();
                 }
@@ -240,14 +292,14 @@ public class mySurfaceView extends GLSurfaceView {
 
         @Override
         public void run(){
-            while(data.cshift-data.dynamic_rec1.p[5].y <= data.screenHeight/2){
+            while(dynamic_t   && data.cshift-data.dynamic_rec1.p[5].y+data.current_h <= data.screenHeight/2){
                 data.cangle += -data.flag*5*Math.PI/180.0;
                 data.cshift += 5;
                 data.dshift += data.flag*2;
                 Log.e("run","    cshift"+data.cshift+"  dshift"+data.dshift+" cangle"+data.cangle);
 
                 try{
-                    Thread.sleep(25);
+                    Thread.sleep(data.translate_v);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -264,5 +316,8 @@ public class mySurfaceView extends GLSurfaceView {
             T1.start();
             T1.flag = true;
         }
+    }
+    public void startmusic(int resid){
+        int type = data.mSound.play(resid, 0.5f, 0.5f, 0, 0, 1);
     }
 }

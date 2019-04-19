@@ -1,7 +1,9 @@
 package com.example.sample2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
@@ -17,16 +19,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import org.xmlpull.v1.XmlPullParser;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 public class drawActivity extends AppCompatActivity {
     public static Button b;
     public static TextView text;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
         mySurfaceView msurfaceView = new mySurfaceView(this);
         //Log.e("run:"," c");
         setContentView(msurfaceView);
+        getWindow().setBackgroundDrawableResource(R.drawable.background);
         /*LinearLayout ll = new LinearLayout(this);
         Button b = new Button(this);
         b.setText("hello world");
@@ -44,6 +50,7 @@ public class drawActivity extends AppCompatActivity {
         data.dshift = 0;
         data.score = 0;
         data.queue.clear();
+        initmusic();
         LinearLayout ll = new LinearLayout(this);
         b = new Button(this);
         b.setText("Resume");
@@ -56,6 +63,7 @@ public class drawActivity extends AppCompatActivity {
         text = new TextView(this);
         text.setTextSize(TypedValue.COMPLEX_UNIT_SP,42);
         text.setText(String.valueOf(data.score));
+        text.setTextColor(Color.WHITE);
         lr.addView(text);
         lr.setGravity(Gravity.CENTER_HORIZONTAL);
         this.addContentView(lr,
@@ -110,8 +118,14 @@ public class drawActivity extends AppCompatActivity {
         b.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick(View v) {
+                //clearFile(data.filename);
+                readSaveFile(data.filename);
+                data.scorecount++;
+                savePackageFile(data.filename);
                 Intent intent = new Intent ( drawActivity.this, MainActivity.class);
-                startActivity ( intent );
+                //startActivity ( intent );
+                setResult(data.score, intent);
+                finish();
             }
         } );
         //Log.e("run2:"," c");
@@ -125,4 +139,86 @@ public class drawActivity extends AppCompatActivity {
         }
         return true;
     }*/
+    public void readSaveFile(String filename) {
+        FileInputStream inputStream;
+        String str = null;
+        try {
+            inputStream = openFileInput(filename);
+            byte temp[] = new byte[1024];
+            StringBuilder sb = new StringBuilder();
+            int len = 0;
+            while ((len = inputStream.read(temp)) > 0){
+                sb.append(new String(temp, 0, len));
+            }
+            //Log.d("msg", "readSaveFile: \n" + sb.toString());
+            str = sb.toString();
+            inputStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int count = 0,num = 0,flag = 0;
+        for(int i = 0;str != null && i < str.length();i++){
+            if(str.charAt(i) >= '0' && str.charAt(i) <= '9'){
+                num = num * 10 + str.charAt(i)-'0';
+            }
+            else{
+                if(flag == 0){
+                    data.scorecount = num;
+                    flag = 1;
+                }
+                else{
+                    data.scorelist[count] = num;
+                    count++;
+                }
+                num = 0;
+            }
+        }
+    }
+    public  void savePackageFile(String filename) {
+        String msg = "";
+        msg  = msg+data.scorecount+' ';
+        if(data.scorecount == 100){
+            for(int i = 0;i < data.scorecount-1;i++){
+                data.scorelist[i] = data.scorelist[i+1];
+            }
+
+        }
+        data.scorelist[data.scorecount-1] = data.score;
+        for(int i = 0;i < data.scorecount;i++){
+            msg = msg + data.scorelist[i]+' ';
+        }
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(msg.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void clearFile(String filename){
+        FileOutputStream outputStream;
+        String msg = "";
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(msg.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void initmusic(){
+        data.mSound.load(this,R.raw.doo,1);
+        data.mSound.load(this,R.raw.re,1);
+        data.mSound.load(this,R.raw.mi,1);
+        data.mSound.load(this,R.raw.fa,1);
+        data.mSound.load(this,R.raw.sol,1);
+        data.mSound.load(this,R.raw.la,1);
+        data.mSound.load(this,R.raw.si,1);
+    }
+
 }
